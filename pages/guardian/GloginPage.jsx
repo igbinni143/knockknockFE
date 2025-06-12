@@ -59,6 +59,7 @@ export default function GloginPage() {
 	};
 	return (
 		<LinearGradient colors={["#123", "#000"]} style={{ flex: 1 }}>
+			{/*//<LinearGradient colors={["#ffffff", "#000"]} style={{ flex: 1 }}>*/}
 			<View style={GUI.container}>
 				<Image source={people} style={GUI.image} />
 				<View style={GUI.loginBox}>

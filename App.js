@@ -2,6 +2,9 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import * as Notifications from "expo-notifications";
+import { useEffect } from "react";
+import { Platform } from "react-native";
 
 import MainLoginPage from "./pages/MainLoginPage";
 import HomePage from "./pages/HomePage";
@@ -14,10 +17,30 @@ import { UserProvider } from "./logic/UserContext.js";
 import Indiv from "./pages/guardian/Indiv.jsx";
 import DailyIndiv from "./pages/guardian/DailyIndiv.jsx";
 import DTest from "./pages/guardian/Dtest.jsx";
+import ElderSchedule from "./pages/elder/ElderSchedule.jsx";
+import ElderPill from "./pages/elder/Elderpill.jsx";
+import ElderPillManager from "./pages/elder/Elderpillmanager.jsx";
+import ElderScheduleManager from "./pages/elder/ElderScheduleManager.jsx";
 
 const Stack = createNativeStackNavigator();
-
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: false,
+		shouldSetBadge: false,
+	}),
+});
 export default function App() {
+	useEffect(() => {
+		const registerForPushNotifications = async () => {
+			const { status } = await Notifications.requestPermissionsAsync();
+			if (status !== "granted") {
+				alert("알림 권한이 거부되었습니다.");
+			}
+		};
+		registerForPushNotifications();
+	}, []);
+
 	return (
 		<UserProvider>
 			<NavigationContainer>
@@ -80,6 +103,30 @@ export default function App() {
 						name="DTest"
 						component={DTest}
 						options={{ headerTitle: "사전 검진" }}
+					/>
+					<Stack.Screen
+						name="ElderPill"
+						component={ElderPill}
+						//options={{ headerTitle: "약 복용" }}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="ElderPillManager"
+						component={ElderPillManager}
+						//options={{ headerTitle: "약 복용" }}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="ElderSchedule"
+						component={ElderSchedule}
+						//options={{ headerTitle: "스케줄 관리" }}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="ElderScheduleManager"
+						component={ElderScheduleManager}
+						//options={{ headerTitle: "스케줄 관리" }}
+						options={{ headerShown: false }}
 					/>
 				</Stack.Navigator>
 			</NavigationContainer>

@@ -13,7 +13,7 @@ const Login = () => {
 		e.preventDefault();
 		await new Promise((r) => setTimeout(r, 1000));
 
-		const response = await fetch("http://18.205.227.28:8080", {
+		const response = await fetch("https://18.205.227.28:8080/login", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -24,14 +24,24 @@ const Login = () => {
 				role: role,
 			}),
 		});
-		const result = await response.json();
+
+		console.log("📦 Status:", response.status);
+
+		const rawText = await response.text();
+		console.log("📄 Raw Response Text:", rawText);
+
+		let result;
+		try {
+			result = JSON.parse(rawText); // 수동으로 파싱
+			console.log("✅ Parsed JSON:", result);
+		} catch (err) {
+			console.error("❌ JSON 파싱 실패:", err);
+			result = {};
+		}
+
 		if (response.status === 200) {
 			setLoginCheck(false);
-
-			// ✅ 응답에서 userId 받아오기
 			const userId = result.userId;
-
-			// ✅ Dashboard로 이동하면서 userId 전달
 			navigation.navigate("Dashboard", { userId });
 		} else {
 			setLoginCheck(true);

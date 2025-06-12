@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
 	View,
 	Text,
@@ -56,41 +56,6 @@ export default function Indiv({ route }) {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
-	// 환자 상세 정보 가져오기
-	//useEffect(() => {
-	//	const fetchDetailData = async () => {
-	//		if (!elderlyData?.elderly_id) {
-	//			setError("잘못된 접근입니다");
-	//			setLoading(false);
-	//			return;
-	//		}
-
-	//		try {
-	//			const elderlyId = elderlyData.elderly_id;
-	//			const response = await fetch(`${API_ADDRESS}/elderly/${elderlyId}`, {
-	//				method: "GET",
-	//				headers: {
-	//					"Content-Type": "application/json",
-	//				},
-	//			});
-
-	//			if (!response.ok) {
-	//				throw new Error(`API 요청 실패: ${response.status}`);
-	//			}
-
-	//			const data = await response.json();
-	//			console.log("상세 정보:", data);
-	//			setDetailData(data);
-	//			setLoading(false);
-	//		} catch (error) {
-	//			console.error("상세 정보 가져오기 실패:", error);
-	//			setError("데이터를 불러오는 중 오류가 발생했습니다");
-	//			setLoading(false);
-	//		}
-	//	};
-
-	//	fetchDetailData();
-	//}, [elderlyData]);
 	useFocusEffect(
 		useCallback(() => {
 			const fetchDetailData = async () => {
@@ -168,15 +133,6 @@ export default function Indiv({ route }) {
 		navigation.goBack();
 	};
 
-	// 행동 기록 페이지로 이동
-	const navigateToActivityLog = () => {
-		navigation.navigate("ActivityLog", { elderlyId: elderlyData.elderly_id });
-	};
-
-	// 채팅 기록 페이지로 이동
-	const navigateToChatLog = () => {
-		navigation.navigate("ChatLog", { elderlyId: elderlyData.elderly_id });
-	};
 	const handleNavDTest = () => {
 		navigation.navigate("DTest", { elderlyId: elderlyData.elderly_id });
 	};
@@ -274,23 +230,6 @@ export default function Indiv({ route }) {
 					<Text style={styles.sectionTitle}>담당자 정보</Text>
 					<InfoItem label="담당 매니저" value={detailData?.managerName} />
 					<InfoItem label="매니저 연락처" value={detailData?.managerPhone} />
-				</View>
-
-				{/* 액션 버튼 */}
-				<View style={styles.actionButtons}>
-					<TouchableOpacity
-						style={[styles.actionButton, styles.logButton]}
-						onPress={navigateToActivityLog}
-					>
-						<Text style={styles.buttonText}>활동 기록 보기</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						style={[styles.actionButton, styles.chatButton]}
-						onPress={navigateToChatLog}
-					>
-						<Text style={styles.buttonText}>대화 기록 보기</Text>
-					</TouchableOpacity>
 				</View>
 			</ScrollView>
 		</LinearGradient>

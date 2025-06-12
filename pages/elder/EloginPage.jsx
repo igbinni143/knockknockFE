@@ -62,10 +62,12 @@ export default function EloginPage() {
 				Alert.alert("로그인 성공", responseData.message || "로그인 성공");
 
 				if (responseData.userId) {
+					console.log("로그인 성공 - userId:", responseData.userId);
 					await fetchElderlyData(responseData.userId);
 				} else {
 					console.error("userId가 없습니다:", responseData);
-					navigation.navigate("ElderMainPage");
+					// userId가 없어도 기본값으로 이동
+					navigation.navigate("ElderMainPage", { elderlyId: 7 });
 				}
 			} else {
 				setLoginCheck(true);
@@ -100,22 +102,35 @@ export default function EloginPage() {
 					elderlyData = await elderlyResponse.json();
 					console.log("Elderly 데이터:", elderlyData);
 
-					// Context를 통해 사용자 데이터 저장
-					login(elderlyData, userId);
+					// elderlyData에 id 정보 추가
+					const userDataWithId = {
+						...elderlyData,
+						id: userId,
+						elderlyId: userId,
+					};
 
-					// 로그인 성공 후 메인 페이지로 이동
-					navigation.navigate("ElderMainPage");
+					console.log("Context에 저장할 데이터:", userDataWithId);
+
+					// Context를 통해 사용자 데이터 저장
+					login(userDataWithId, userId);
+
+					// elderlyId를 전달하면서 메인 페이지로 이동
+					console.log("메인 페이지로 이동 - elderlyId:", userId);
+					navigation.navigate("ElderMainPage", { elderlyId: userId });
 				} catch (jsonError) {
 					console.error("Elderly JSON 파싱 오류:", jsonError);
-					navigation.navigate("ElderMainPage");
+					// 파싱 실패해도 userId는 전달
+					navigation.navigate("ElderMainPage", { elderlyId: userId });
 				}
 			} else {
 				console.error("Elderly 정보 가져오기 실패");
-				navigation.navigate("ElderMainPage");
+				// 실패해도 userId는 전달
+				navigation.navigate("ElderMainPage", { elderlyId: userId });
 			}
 		} catch (error) {
 			console.error("Elderly 정보 가져오기 오류:", error);
-			navigation.navigate("ElderMainPage");
+			// 오류 발생해도 userId는 전달
+			navigation.navigate("ElderMainPage", { elderlyId: userId });
 		}
 	};
 

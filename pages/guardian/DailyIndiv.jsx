@@ -14,7 +14,7 @@ import radar_chart from "../../components/img/radar_chart2.png";
 import { LinearGradient } from "expo-linear-gradient";
 import { API_ADDRESS } from "../../logic/API";
 import { useNavigation } from "@react-navigation/native";
-import { Audio } from "expo-av";
+import { Audio } from "expo-audio";
 import RecordingPlayer from "./RecordingPlayer";
 
 export default function DailyIndiv({ route }) {
@@ -25,6 +25,20 @@ export default function DailyIndiv({ route }) {
 	const [weeklyData, setWeeklyData] = useState(null); // 주간 리포트
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+
+	const navigateToElderPillManager = () => {
+		navigation.navigate("ElderPillManager", {
+			name: elderlyData.name,
+			elderlyId: elderlyData.elderly_id,
+		});
+	};
+
+	const navigateToElderScheduleManager = () => {
+		navigation.navigate("ElderScheduleManager", {
+			name: elderlyData.name,
+			elderlyId: elderlyData.elderly_id,
+		});
+	};
 
 	const handleNavIndiv = () => {
 		navigation.navigate("Indiv", { elderlyData: elderlyData });
@@ -50,11 +64,14 @@ export default function DailyIndiv({ route }) {
 			try {
 				if (!elderlyData?.elderly_id) return;
 				const response = await fetch(
-					`${API_ADDRESS}/weekly-reports/${elderlyData.elderly_id - 6}/parsed`
+					`${API_ADDRESS}/weekly-reports/${elderlyData.elderly_id}`
 				);
 				const data = await response.json();
+				console.log(
+					"✅ weeklyData base64 preview:",
+					data.graphImageBase64?.slice(0, 30)
+				);
 				setWeeklyData(data);
-				console.log("주간 리포트", data);
 			} catch (e) {
 				setError("주간 리포트 로딩 오류");
 			}
@@ -76,6 +93,22 @@ export default function DailyIndiv({ route }) {
 					</TouchableOpacity>
 					<Text style={styles.name}>{elderlyData?.name || "이름 없음"}</Text>
 					{/*<Text style={styles.statusMessage}>{getStatusMessage()}</Text>*/}
+				</View>
+				{/* 액션 버튼 */}
+				<View style={styles.actionButtons}>
+					<TouchableOpacity
+						style={[styles.actionButton, styles.logButton]}
+						onPress={navigateToElderPillManager}
+					>
+						<Text style={styles.buttonText}>복용 약 보기</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity
+						style={[styles.actionButton, styles.chatButton]}
+						onPress={navigateToElderScheduleManager}
+					>
+						<Text style={styles.buttonText}>스케줄 보기</Text>
+					</TouchableOpacity>
 				</View>
 				<View>
 					{dailyData ? (
@@ -128,13 +161,17 @@ export default function DailyIndiv({ route }) {
 					<Text style={styles.sectionTitle}>주간 상태</Text>
 					{weeklyData && (
 						<Text style={styles.statusMessage}>
-							{weeklyData.summary || "주간 요약 정보가 없습니다."}
+							{weeklyData.weeklyReport || "주간 요약 정보가 없습니다."}
 						</Text>
 					)}
-					<Image
-						source={radar_chart}
-						style={{ width: 300, height: 250, alignSelf: "center" }}
-					/>
+					{weeklyData?.graphImageBase64 && (
+						<Image
+							source={{
+								uri: `data:image/jpeg;base64,${weeklyData.graphImageBase64}`,
+							}}
+							style={{ width: 300, height: 250, alignSelf: "center" }}
+						/>
+					)}
 				</View>
 				<View>
 					<RecordingPlayer />

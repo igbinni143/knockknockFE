@@ -16,8 +16,8 @@ export const styles = StyleSheet.create({
 		marginBottom: 20,
 	},
 	mainImage: {
-		width: 100,
-		height: 100,
+		width: 130,
+		height: 130,
 		paddingTop: 0,
 		marginTop: 0,
 		marginBottom: 40,
@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
 	},
 	mainText: {
 		color: "white",
-		fontSize: 24,
+		fontSize: 28,
 		fontWeight: "bold",
 		marginBottom: 10,
 		textAlign: "center",

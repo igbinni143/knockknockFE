@@ -1,5 +1,6 @@
 export const gradientProps = {
 	colors: ["rgb(36 49 63)", "rgb(32 45 56)", "rgb(0, 0, 0)"],
+	//colors: ["white", "rgb(232 245 256)", "rgb(168, 193, 251)"],
 	start: { x: 0, y: 0 },
 	end: { x: 1, y: 1 },
 };
